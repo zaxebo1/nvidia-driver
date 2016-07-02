@@ -29,7 +29,7 @@
 
 Name:           nvidia-driver
 Version:        364.19
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA's proprietary display driver for NVIDIA graphic cards
 Epoch:          2
 License:        NVIDIA License
@@ -394,6 +394,10 @@ fi ||:
 %{_includedir}/nvidia/
 
 %changelog
+* Sat Jul  2 2016 Pavlo Rudyi <paulcarroty at riseup.net> - 2:364.19-3
+- Add patch by @mchobbel with fix for 4.6 kernel
+
+
 * Fri May 27 2016 Simone Caronni <negativo17@gmail.com> - 2:364.19-2
 - Load nvidia-uvm.ko through a soft dependency on nvidia.ko. This avoids
   inserting the nvidia-uvm configuration file in the initrd. Since the module
