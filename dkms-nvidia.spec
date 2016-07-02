@@ -15,6 +15,8 @@ Source0:        %{dkms_name}-kmod-%{version}-i386.tar.xz
 Source1:        %{dkms_name}-kmod-%{version}-x86_64.tar.xz
 Source3:        %{name}.conf
 
+Patch0:         kernel-4.6-compat.patch
+
 BuildRequires:  sed
 
 Provides:       %{dkms_name}-kmod = %{?epoch}:%{version}
@@ -27,12 +29,15 @@ The modules are rebuilt through the DKMS system when a new kernel or modules
 become available.
 
 %prep
+
 %ifarch %{ix86}
 %setup -q -n %{dkms_name}-kmod-%{version}-i386
+
 %endif
 
 %ifarch x86_64
 %setup -q -T -b 1 -n %{dkms_name}-kmod-%{version}-x86_64
+%patch0 -p1
 %endif
 
 cp -f %{SOURCE3} kernel/dkms.conf
