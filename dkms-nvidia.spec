@@ -16,6 +16,9 @@ Source1:        %{dkms_name}-kmod-%{version}-x86_64.tar.xz
 Source3:        %{name}.conf
 
 Patch0:         kernel-4.6-compat.patch
+# kernel-4.7-compat-pt1.patch is x86_64 only
+Patch1:         kernel-4.7-compat-pt1.patch
+Patch2:         kernel-4.7-compat_pt2.patch
 
 BuildRequires:  sed
 
@@ -33,11 +36,14 @@ become available.
 %ifarch %{ix86}
 %setup -q -n %{dkms_name}-kmod-%{version}-i386
 %patch0 -p1
+%patch2 -p1
 %endif
 
 %ifarch x86_64
 %setup -q -T -b 1 -n %{dkms_name}-kmod-%{version}-x86_64
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 %endif
 
 cp -f %{SOURCE3} kernel/dkms.conf
