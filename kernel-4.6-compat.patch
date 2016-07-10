@@ -1,45 +1,81 @@
 diff -ru ../nvidia-kmod-364.19-x86_64.orig/kernel/nvidia-drm/nvidia-drm-fb.c ./kernel/nvidia-drm/nvidia-drm-fb.c
 --- ../nvidia-kmod-364.19-x86_64.orig/kernel/nvidia-drm/nvidia-drm-fb.c	2016-06-29 16:36:47.128018972 +0200
-+++ ./kernel/nvidia-drm/nvidia-drm-fb.c	2016-06-29 16:36:52.463096587 +0200
-@@ -77,7 +77,7 @@
++++ ./kernel/nvidia-drm/nvidia-drm-fb.c	2016-07-10 09:42:21.967503956 +0100
+@@ -24,6 +24,7 @@
+ 
+ #if defined(NV_DRM_ATOMIC_MODESET_AVAILABLE)
+ 
++#include <linux/version.h>
+ #include "nvidia-drm-priv.h"
+ #include "nvidia-drm-ioctl.h"
+ #include "nvidia-drm-fb.h"
+@@ -77,7 +78,11 @@
  static struct drm_framebuffer *internal_framebuffer_create
  (
      struct drm_device *dev,
--    struct drm_file *file, struct drm_mode_fb_cmd2 *cmd,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
 +    struct drm_file *file, const struct drm_mode_fb_cmd2 *cmd,
++#else
+     struct drm_file *file, struct drm_mode_fb_cmd2 *cmd,
++#endif
      uint64_t nvkms_params_ptr,
      uint64_t nvkms_params_size
  )
-@@ -199,7 +199,7 @@
+@@ -199,7 +204,11 @@
  struct drm_framebuffer *nvidia_drm_framebuffer_create
  (
      struct drm_device *dev,
--    struct drm_file *file, struct drm_mode_fb_cmd2 *cmd
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
 +    struct drm_file *file, const struct drm_mode_fb_cmd2 *cmd
++#else
+     struct drm_file *file, struct drm_mode_fb_cmd2 *cmd
++#endif
  )
  {
      return internal_framebuffer_create(dev, file, cmd, 0, 0);
 diff -ru ../nvidia-kmod-364.19-x86_64.orig/kernel/nvidia-drm/nvidia-drm-fb.h ./kernel/nvidia-drm/nvidia-drm-fb.h
 --- ../nvidia-kmod-364.19-x86_64.orig/kernel/nvidia-drm/nvidia-drm-fb.h	2016-06-29 16:36:47.129018986 +0200
-+++ ./kernel/nvidia-drm/nvidia-drm-fb.h	2016-06-29 16:36:52.463096587 +0200
-@@ -45,7 +45,7 @@
++++ ./kernel/nvidia-drm/nvidia-drm-fb.h	2016-07-10 09:45:16.294440326 +0100
+@@ -27,6 +27,7 @@
+ 
+ #if defined(NV_DRM_ATOMIC_MODESET_AVAILABLE)
+ 
++#include <linux/version.h>
+ #include <drm/drmP.h>
+ #include "nvkms-kapi.h"
+ 
+@@ -45,7 +46,11 @@
  struct drm_framebuffer *nvidia_drm_framebuffer_create
  (
      struct drm_device *dev,
--    struct drm_file *file, struct drm_mode_fb_cmd2 *cmd
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
 +    struct drm_file *file, const struct drm_mode_fb_cmd2 *cmd
++#else
+     struct drm_file *file, struct drm_mode_fb_cmd2 *cmd
++#endif
  );
  
  int nvidia_drm_add_nvkms_fb(
 diff -ru ../nvidia-kmod-364.19-x86_64.orig/kernel/nvidia-drm/nvidia-drm-linux.c ./kernel/nvidia-drm/nvidia-drm-linux.c
 --- ../nvidia-kmod-364.19-x86_64.orig/kernel/nvidia-drm/nvidia-drm-linux.c	2016-06-29 16:36:47.128018972 +0200
-+++ ./kernel/nvidia-drm/nvidia-drm-linux.c	2016-06-29 16:36:52.464096602 +0200
-@@ -121,7 +121,7 @@
++++ ./kernel/nvidia-drm/nvidia-drm-linux.c	2016-07-10 09:47:32.182714152 +0100
+@@ -23,6 +23,7 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/err.h>
++#include <linux/version.h>
+ 
+ #include "nvidia-drm-os-interface.h"
+ #include "nvidia-drm.h"
+@@ -121,7 +122,11 @@
  
      down_read(&mm->mmap_sem);
  
--    pages_pinned = get_user_pages(current, mm,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0)
 +    pages_pinned = get_user_pages_remote(current, mm,
++#else
+     pages_pinned = get_user_pages(current, mm,
++#endif
                                    address, pages_count, write, force,
                                    user_pages, NULL);
      up_read(&mm->mmap_sem);
