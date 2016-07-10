@@ -32,7 +32,7 @@ become available.
 
 %ifarch %{ix86}
 %setup -q -n %{dkms_name}-kmod-%{version}-i386
-
+%patch0 -p1
 %endif
 
 %ifarch x86_64
