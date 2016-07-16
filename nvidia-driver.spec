@@ -66,6 +66,7 @@ Provides:       nvidia-kmod-common = %{?epoch}:%{version}
 Requires:       nvidia-settings%{?_isa} = %{?epoch}:%{version}
 Requires:       libva-vdpau-driver%{?_isa}
 #Requires:      vulkan-filesystem
+Requires:       kernel-devel
 
 Conflicts:      nvidia-x11-drv-beta
 Conflicts:      nvidia-x11-drv-71xx
